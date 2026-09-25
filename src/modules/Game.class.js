@@ -116,7 +116,7 @@ class Game {
   }
 
   getState() {
-    return this.state;
+    return this.state.map((row) => [...row]);
   }
 
   getStatus() {
