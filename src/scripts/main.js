@@ -7,6 +7,8 @@ const cells = document.querySelectorAll('.field-cell');
 const scoreElement = document.querySelector('.game-score');
 const button = document.querySelector('.button');
 
+const gameField = document.querySelector('.game-field');
+
 const startMessage = document.querySelector('.message-start');
 const winMessage = document.querySelector('.message-win');
 const loseMessage = document.querySelector('.message-lose');
@@ -97,6 +99,49 @@ document.addEventListener('keydown', (keyboardEvent) => {
   button.textContent = 'Restart';
   button.classList.remove('start');
   button.classList.add('restart');
+
+  render();
+});
+
+let touchStartX = 0;
+let touchStartY = 0;
+
+const minSwipeDistance = 30;
+
+gameField.addEventListener('touchstart', (touchEvent) => {
+  touchStartX = touchEvent.touches[0].clientX;
+  touchStartY = touchEvent.touches[0].clientY;
+});
+
+gameField.addEventListener('touchend', (touchEvent) => {
+  if (game.getStatus() !== 'playing') {
+    return;
+  }
+
+  const touchEndX = touchEvent.changedTouches[0].clientX;
+  const touchEndY = touchEvent.changedTouches[0].clientY;
+
+  const differenceX = touchEndX - touchStartX;
+  const differenceY = touchEndY - touchStartY;
+
+  if (
+    Math.abs(differenceX) < minSwipeDistance &&
+    Math.abs(differenceY) < minSwipeDistance
+  ) {
+    return;
+  }
+
+  if (Math.abs(differenceX) > Math.abs(differenceY)) {
+    if (differenceX > 0) {
+      game.moveRight();
+    } else {
+      game.moveLeft();
+    }
+  } else if (differenceY > 0) {
+    game.moveDown();
+  } else {
+    game.moveUp();
+  }
 
   render();
 });
